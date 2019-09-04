@@ -1,7 +1,7 @@
 <section class="todoapp">
   <header class="header">
     <h1>Tasks to Complete</h1>
-    <form id="new-form">
+    <form class="new-form" id="new-form" size="250">
       <input type="text" class="new-todo"/>
     </form>
   </header>
@@ -18,20 +18,7 @@
 <script>
     // toggleTask translates to HTML
   $(function() {
-    $('#new-form').submit(function(event) {
-      event.preventDefault();
-      var textBox = $('.new-todo');
-      var payload = {
-        task: {
-          title: textBox.val()
-        }
-      };
-      $.post("/tasks", payload).success(function(data) {
-        console.log("Successful HTTP Request")
-      });
-      location.reload();
-    });
-
+    
     function taskHtml(task) {
       var checkedStatus = task.done ? "checked" : "";
       var liElement = '<li><div class="view"><input class="form-checkbox" type="checkbox" id="check-one" value="one"' + 
@@ -69,6 +56,23 @@
       $('.form-checkbox').change(toggleTask);
 
     });
+
+    $('#new-form').submit(function(event) {
+      event.preventDefault();
+      var textBox = $('.new-todo');
+      var payload = {
+        task: {
+          title: textBox.val()
+        }
+      };
+      $.post("/tasks", payload).success(function(data) {
+        var htmlString = taskHtml(data);
+        var ulTodos = $('.todo-list');
+        ulTodos.append(htmlString);
+        $('.form-checkbox').click(toggleTask);
+      });
+    });
+
 
   });
 
